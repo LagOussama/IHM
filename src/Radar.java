@@ -123,7 +123,7 @@ public class Radar {
 		
 		
 		slider.setMaximum(45);
-		slider.setMinimum(45);
+		slider.setMinimum(-45);
 
 		         
 		// Set the label to be drawn
@@ -155,10 +155,51 @@ public class Radar {
 		eventSourcesTilt = new HashMap<>(Tilt.values().length);
 		eventSourcesTilt.put(Tilt.CB1, ManualBtn);
 		eventSourcesTilt.put(Tilt.CB2, AutoBtn);
+		
+		System.out.println(tglbtnOn.getLabel());
 		eventSourcesTilt.put(Tilt.CB3, tglbtnOn);
 		eventSourcesTilt.put(Tilt.CB4, tglbtnOn);
 		eventSourcesTilt.put(Tilt.CB5, slider);
 
+		   for (Tilt event : Tilt.values()) {
+	            automatonTilt.addPropertyChangeListener(
+	                    event.toString() + Automaton.ENABLED_SUFFIX, (e) -> {
+	                eventSourcesTilt.get(event).setEnabled((Boolean) e.getNewValue());
+	            });
+	        } 
+        automatonTilt.registerInitialization(TiltState.S2);
+        
+        automatonTilt.registerTransition(TiltState.S2, Tilt.CB1, TiltState.S1);
+        
+        automatonTilt.registerTransition(TiltState.S1, Tilt.CB2, TiltState.S2);
+        
+
+        
+        automatonTilt.registerTransition(TiltState.S1, Tilt.CB4, TiltState.S4);
+        
+
+        
+        automatonTilt.registerTransition(TiltState.S4, Tilt.CB3, TiltState.S3);
+        
+
+        
+        automatonTilt.registerTransition(TiltState.S4, Tilt.CB5, TiltState.S5);
+        
+        
+
+        
+        automatonTilt.registerTransition(TiltState.S3, Tilt.CB2, TiltState.S2);
+        
+
+        
+        automatonTilt.registerTransition(TiltState.S3, Tilt.CB4, TiltState.S4);
+        
+
+        
+        automatonTilt.initialize();
+        
+
+		
 			
 	}
 
@@ -224,10 +265,17 @@ public class Radar {
 		           AutoBtn = new JButton("Auto");
 		          AutoBtn.addActionListener(new ActionListener() {
 		          	public void actionPerformed(ActionEvent e) {
+		          		AutoActionPerformed(e);
 		          	}
 		          });
 		          
 		           ManualBtn = new JButton("Manual");
+		           
+		           ManualBtn.addActionListener(new ActionListener() {
+			          	public void actionPerformed(ActionEvent e) {
+			          		ManualActionPerformed(e);
+			          	}
+			          });
 		          
 		           slider = new JSlider();
 		          
@@ -236,6 +284,7 @@ public class Radar {
 		          JLabel lblStabilisation = new JLabel("STABILISATION");
 		          
 		           tglbtnOn = new JToggleButton("ON");
+		           
 		          
 		          
 		          
@@ -245,9 +294,9 @@ public class Radar {
 		        	        state = itemEvent.getStateChange();
 		        	        if (state == ItemEvent.SELECTED) {
 		        	            System.out.println("Selected");
-		        	            tglbtnOn.setLabel("ON");
-		        	        } else {
 		        	            tglbtnOn.setLabel("OFF");
+		        	        } else {
+		        	            tglbtnOn.setLabel("ON");
 
 		        	            System.out.println("Deselected"); 
 		        	        }
@@ -426,6 +475,11 @@ public class Radar {
 		automatonTilt.acceptEvent(Tilt.CB4);
 		
 	}
+	
+//	private void angleActionPerformed(ActionEvent e) {
+//		automatonTilt.acceptEvent(Tilt.CB5);
+//		
+//	}
 	
 	public void switchPanel(JPanel panel) {
 		
