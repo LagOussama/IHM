@@ -34,6 +34,7 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JToggleButton;
+import javax.swing.JSeparator;
 
 public class Radar {
 	private JButton WxonBtn ;
@@ -51,8 +52,10 @@ public class Radar {
 	private JPanel anglePanel ;
 	private JPanel ModePanel ;
 	private ItemListener itemListener;
-	private JToggleButton tglbtnOn;
 	private int state;
+	
+	private JButton btnOn ;
+	private JButton btnOff;
 
 	
 	private enum PossibleState{
@@ -155,11 +158,21 @@ public class Radar {
 		eventSourcesTilt = new HashMap<>(Tilt.values().length);
 		eventSourcesTilt.put(Tilt.CB1, ManualBtn);
 		eventSourcesTilt.put(Tilt.CB2, AutoBtn);
-		
-		System.out.println(tglbtnOn.getLabel());
-		eventSourcesTilt.put(Tilt.CB3, tglbtnOn);
-		eventSourcesTilt.put(Tilt.CB4, tglbtnOn);
+		eventSourcesTilt.put(Tilt.CB3, btnOn);
+		eventSourcesTilt.put(Tilt.CB4, btnOff);
 		eventSourcesTilt.put(Tilt.CB5, slider);
+		GroupLayout gl_layeredPane = new GroupLayout(layeredPane);
+		gl_layeredPane.setHorizontalGroup(
+			gl_layeredPane.createParallelGroup(Alignment.LEADING)
+				.addComponent(anglePanel, GroupLayout.PREFERRED_SIZE, 429, GroupLayout.PREFERRED_SIZE)
+				.addComponent(ModePanel, GroupLayout.PREFERRED_SIZE, 429, GroupLayout.PREFERRED_SIZE)
+		);
+		gl_layeredPane.setVerticalGroup(
+			gl_layeredPane.createParallelGroup(Alignment.LEADING)
+				.addComponent(anglePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addComponent(ModePanel, GroupLayout.PREFERRED_SIZE, 171, GroupLayout.PREFERRED_SIZE)
+		);
+		layeredPane.setLayout(gl_layeredPane);
 
 		   for (Tilt event : Tilt.values()) {
 	            automatonTilt.addPropertyChangeListener(
@@ -198,9 +211,6 @@ public class Radar {
         
         automatonTilt.initialize();
         
-
-		
-			
 	}
 
 	/**
@@ -235,16 +245,15 @@ public class Radar {
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+					.addComponent(angleBtn)
+					.addGap(18)
+					.addComponent(ModeBtn)
+					.addGap(268))
+				.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(angleBtn)
-							.addGap(18)
-							.addComponent(ModeBtn)
-							.addGap(381))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(layeredPane, GroupLayout.DEFAULT_SIZE, 542, Short.MAX_VALUE)
-							.addGap(15))))
+					.addComponent(layeredPane, GroupLayout.PREFERRED_SIZE, 428, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(129, Short.MAX_VALUE))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -253,14 +262,12 @@ public class Radar {
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(angleBtn)
 						.addComponent(ModeBtn))
-					.addPreferredGap(ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+					.addGap(27)
 					.addComponent(layeredPane, GroupLayout.PREFERRED_SIZE, 171, GroupLayout.PREFERRED_SIZE)
-					.addGap(29))
+					.addContainerGap(31, Short.MAX_VALUE))
 		);
 		          
 		           anglePanel = new JPanel();
-		          anglePanel.setBounds(0, 0, 429, 171);
-		          layeredPane.add(anglePanel);
 		          
 		           AutoBtn = new JButton("Auto");
 		          AutoBtn.addActionListener(new ActionListener() {
@@ -282,92 +289,85 @@ public class Radar {
 		          JLabel lblNewLabel = new JLabel("RADAR ANGLE :");
 		          
 		          JLabel lblStabilisation = new JLabel("STABILISATION");
-		          
-		           tglbtnOn = new JToggleButton("ON");
 		           
 		          
+		           btnOn = new JButton("ON");
+		           btnOn.addActionListener(new ActionListener() {
+		           	public void actionPerformed(ActionEvent e) {
+		           		stabilizationOnActionPerformed(e);
+		           		
+		           		
+		           	}
+		           });
 		          
+		           btnOff = new JButton("OFF");
+		           btnOff.addActionListener(new ActionListener() {
+		           	public void actionPerformed(ActionEvent e) {
+		           		stabilizationOffActionPerformed(e);
+		           	}
+		           });
 		          
-		           ItemListener itemListener = new ItemListener() {
-		        	    @SuppressWarnings("deprecation")
-						public void itemStateChanged(ItemEvent itemEvent) {
-		        	        state = itemEvent.getStateChange();
-		        	        if (state == ItemEvent.SELECTED) {
-		        	            System.out.println("Selected");
-		        	            tglbtnOn.setLabel("OFF");
-		        	        } else {
-		        	            tglbtnOn.setLabel("ON");
-
-		        	            System.out.println("Deselected"); 
-		        	        }
-		        	    }
-		        	};
-		        	
-		        
-		        	tglbtnOn.addItemListener(itemListener);
-		        	tglbtnOn.addActionListener(new ActionListener( ) {
-		        	      public void actionPerformed(ActionEvent ev) {
-		        	    	  
-		        	    	  if(tglbtnOn.getLabel().equals("ON"))
-		        	                stabilizationOnActionPerformed(ev);
-
-		        	    	  else if(tglbtnOn.getLabel().equals("OFF"))
-		        	                stabilizationOffActionPerformed(ev);
-
-		        	        }
-		        	      });
+		          JSeparator separator = new JSeparator();
 		          GroupLayout gl_anglePanel = new GroupLayout(anglePanel);
 		          gl_anglePanel.setHorizontalGroup(
-		          	gl_anglePanel.createParallelGroup(Alignment.LEADING)
-		          		.addGroup(Alignment.TRAILING, gl_anglePanel.createSequentialGroup()
+		          	gl_anglePanel.createParallelGroup(Alignment.TRAILING)
+		          		.addGroup(gl_anglePanel.createSequentialGroup()
 		          			.addGroup(gl_anglePanel.createParallelGroup(Alignment.LEADING)
 		          				.addGroup(gl_anglePanel.createSequentialGroup()
 		          					.addContainerGap()
 		          					.addComponent(AutoBtn))
 		          				.addComponent(ManualBtn))
-		          			.addPreferredGap(ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+		          			.addPreferredGap(ComponentPlacement.RELATED)
+		          			.addComponent(separator, GroupLayout.PREFERRED_SIZE, 0, GroupLayout.PREFERRED_SIZE)
+		          			.addGap(21)
 		          			.addGroup(gl_anglePanel.createParallelGroup(Alignment.LEADING)
 		          				.addGroup(gl_anglePanel.createSequentialGroup()
-		          					.addGap(6)
-		          					.addComponent(tglbtnOn))
-		          				.addComponent(lblStabilisation, GroupLayout.PREFERRED_SIZE, 98, GroupLayout.PREFERRED_SIZE))
-		          			.addGroup(gl_anglePanel.createParallelGroup(Alignment.LEADING)
-		          				.addGroup(gl_anglePanel.createSequentialGroup()
-		          					.addGap(51)
-		          					.addComponent(lblNewLabel))
-		          				.addGroup(gl_anglePanel.createSequentialGroup()
-		          					.addGap(18)
-		          					.addComponent(slider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-		          			.addGap(10))
+		          					.addGroup(gl_anglePanel.createParallelGroup(Alignment.LEADING)
+		          						.addGroup(gl_anglePanel.createSequentialGroup()
+		          							.addPreferredGap(ComponentPlacement.RELATED, 1, Short.MAX_VALUE)
+		          							.addComponent(lblStabilisation, GroupLayout.PREFERRED_SIZE, 98, GroupLayout.PREFERRED_SIZE))
+		          						.addComponent(btnOn))
+		          					.addPreferredGap(ComponentPlacement.UNRELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+		          					.addGroup(gl_anglePanel.createParallelGroup(Alignment.TRAILING)
+		          						.addComponent(slider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+		          						.addGroup(gl_anglePanel.createSequentialGroup()
+		          							.addComponent(lblNewLabel)
+		          							.addGap(57))))
+		          				.addComponent(btnOff))
+		          			.addContainerGap())
 		          );
 		          gl_anglePanel.setVerticalGroup(
 		          	gl_anglePanel.createParallelGroup(Alignment.LEADING)
 		          		.addGroup(gl_anglePanel.createSequentialGroup()
+		          			.addContainerGap()
 		          			.addGroup(gl_anglePanel.createParallelGroup(Alignment.LEADING)
 		          				.addGroup(gl_anglePanel.createSequentialGroup()
-		          					.addGap(45)
-		          					.addGroup(gl_anglePanel.createParallelGroup(Alignment.BASELINE)
-		          						.addComponent(AutoBtn)
-		          						.addComponent(lblStabilisation)))
-		          				.addGroup(gl_anglePanel.createSequentialGroup()
-		          					.addGap(25)
-		          					.addComponent(slider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-		          			.addGroup(gl_anglePanel.createParallelGroup(Alignment.LEADING)
-		          				.addGroup(gl_anglePanel.createSequentialGroup()
-		          					.addGap(30)
-		          					.addComponent(ManualBtn))
-		          				.addGroup(gl_anglePanel.createSequentialGroup()
-		          					.addPreferredGap(ComponentPlacement.RELATED)
-		          					.addGroup(gl_anglePanel.createParallelGroup(Alignment.TRAILING)
-		          						.addComponent(lblNewLabel)
-		          						.addComponent(tglbtnOn))))
-		          			.addContainerGap(38, Short.MAX_VALUE))
+		          					.addGroup(gl_anglePanel.createParallelGroup(Alignment.LEADING)
+		          						.addGroup(gl_anglePanel.createSequentialGroup()
+		          							.addGap(39)
+		          							.addGroup(gl_anglePanel.createParallelGroup(Alignment.BASELINE)
+		          								.addComponent(AutoBtn)
+		          								.addComponent(lblStabilisation)))
+		          						.addGroup(gl_anglePanel.createSequentialGroup()
+		          							.addGap(25)
+		          							.addComponent(slider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+		          					.addGroup(gl_anglePanel.createParallelGroup(Alignment.LEADING)
+		          						.addGroup(gl_anglePanel.createSequentialGroup()
+		          							.addGap(5)
+		          							.addComponent(lblNewLabel)
+		          							.addGap(9)
+		          							.addComponent(ManualBtn))
+		          						.addGroup(gl_anglePanel.createSequentialGroup()
+		          							.addGap(12)
+		          							.addComponent(btnOn)
+		          							.addPreferredGap(ComponentPlacement.RELATED)
+		          							.addComponent(btnOff))))
+		          				.addComponent(separator, GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE))
+		          			.addContainerGap())
 		          );
 		          anglePanel.setLayout(gl_anglePanel);
 		          
 		          ModePanel = new JPanel();
-		          ModePanel.setBounds(0, 0, 429, 171);
-		          layeredPane.add(ModePanel);
 		          
 		           WxaBtn = new JButton("WXA");
 		           
@@ -489,6 +489,4 @@ public class Radar {
 		layeredPane.revalidate();
 		
 	}
-	
-	
 }
