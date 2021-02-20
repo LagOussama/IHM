@@ -288,6 +288,9 @@ public class Radar {
 			          		ManualActionPerformed(e);
 			          	}
 			          });
+		           
+			          JLabel labelAngle = new JLabel("");
+
 		          
 		           slider = new JSlider();
 		           
@@ -297,9 +300,10 @@ public class Radar {
 					public void stateChanged(ChangeEvent e) {
 		                   System.out.println();
 		                   
+		                   int v = ((JSlider) e.getSource()).getValue();
+
 		                   
-		                   
-							labelAngle.setText(String.valueOf(((JSlider) e.getSource()).getValue()));
+							labelAngle.setText(String.valueOf(v));
 
 						
 					}
@@ -328,7 +332,6 @@ public class Radar {
 		          
 		          JSeparator separator = new JSeparator();
 		          
-		          JLabel labelAngle = new JLabel("");
 		          GroupLayout gl_anglePanel = new GroupLayout(anglePanel);
 		          gl_anglePanel.setHorizontalGroup(
 		          	gl_anglePanel.createParallelGroup(Alignment.TRAILING)
@@ -501,10 +504,7 @@ public class Radar {
 		
 	}
 	
-	public void actionPerformed(ActionEvent e)
-    {
-		labelAngle.setText(String.valueOf(slider.getValue()));
-    }
+
 	
 //	private void angleActionPerformed(ActionEvent e) {
 //		automatonTilt.acceptEvent(Tilt.CB5);
