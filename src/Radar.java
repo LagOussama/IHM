@@ -20,6 +20,8 @@ import java.awt.Insets;
 import java.awt.CardLayout;
 import javax.swing.BoxLayout;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.JComponent;
 
 import fr.irit.automaton.Automaton;
@@ -54,6 +56,7 @@ public class Radar {
 	private ItemListener itemListener;
 	private int state;
 	
+	 private JLabel labelAngle;
 	private JButton btnOn ;
 	private JButton btnOff;
 
@@ -211,6 +214,8 @@ public class Radar {
         
         automatonTilt.initialize();
         
+        
+        
 	}
 
 	/**
@@ -239,7 +244,7 @@ public class Radar {
 		 	}
 		 });
 		
-		  
+		 
 	  
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
@@ -285,6 +290,20 @@ public class Radar {
 			          });
 		          
 		           slider = new JSlider();
+		           
+		           slider.addChangeListener(new ChangeListener() {
+		              
+					@Override
+					public void stateChanged(ChangeEvent e) {
+		                   System.out.println();
+		                   
+		                   
+		                   
+							labelAngle.setText(String.valueOf(((JSlider) e.getSource()).getValue()));
+
+						
+					}
+		           });
 		          
 		          JLabel lblNewLabel = new JLabel("RADAR ANGLE :");
 		          
@@ -308,6 +327,8 @@ public class Radar {
 		           });
 		          
 		          JSeparator separator = new JSeparator();
+		          
+		          JLabel labelAngle = new JLabel("");
 		          GroupLayout gl_anglePanel = new GroupLayout(anglePanel);
 		          gl_anglePanel.setHorizontalGroup(
 		          	gl_anglePanel.createParallelGroup(Alignment.TRAILING)
@@ -324,14 +345,16 @@ public class Radar {
 		          				.addGroup(gl_anglePanel.createSequentialGroup()
 		          					.addGroup(gl_anglePanel.createParallelGroup(Alignment.LEADING)
 		          						.addGroup(gl_anglePanel.createSequentialGroup()
-		          							.addPreferredGap(ComponentPlacement.RELATED, 1, Short.MAX_VALUE)
+		          							.addPreferredGap(ComponentPlacement.RELATED, 4, Short.MAX_VALUE)
 		          							.addComponent(lblStabilisation, GroupLayout.PREFERRED_SIZE, 98, GroupLayout.PREFERRED_SIZE))
 		          						.addComponent(btnOn))
-		          					.addPreferredGap(ComponentPlacement.UNRELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+		          					.addPreferredGap(ComponentPlacement.UNRELATED, 15, Short.MAX_VALUE)
 		          					.addGroup(gl_anglePanel.createParallelGroup(Alignment.TRAILING)
 		          						.addComponent(slider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 		          						.addGroup(gl_anglePanel.createSequentialGroup()
-		          							.addComponent(lblNewLabel)
+		          							.addGroup(gl_anglePanel.createParallelGroup(Alignment.TRAILING)
+		          								.addComponent(labelAngle)
+		          								.addComponent(lblNewLabel))
 		          							.addGap(57))))
 		          				.addComponent(btnOff))
 		          			.addContainerGap())
@@ -361,7 +384,9 @@ public class Radar {
 		          							.addGap(12)
 		          							.addComponent(btnOn)
 		          							.addPreferredGap(ComponentPlacement.RELATED)
-		          							.addComponent(btnOff))))
+		          							.addGroup(gl_anglePanel.createParallelGroup(Alignment.BASELINE)
+		          								.addComponent(btnOff)
+		          								.addComponent(labelAngle)))))
 		          				.addComponent(separator, GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE))
 		          			.addContainerGap())
 		          );
@@ -475,6 +500,11 @@ public class Radar {
 		automatonTilt.acceptEvent(Tilt.CB4);
 		
 	}
+	
+	public void actionPerformed(ActionEvent e)
+    {
+		labelAngle.setText(String.valueOf(slider.getValue()));
+    }
 	
 //	private void angleActionPerformed(ActionEvent e) {
 //		automatonTilt.acceptEvent(Tilt.CB5);
