@@ -4,6 +4,8 @@ import javax.swing.JFrame;
 import javax.swing.JButton;
 import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -34,7 +36,6 @@ import javax.swing.JLabel;
 import javax.swing.JToggleButton;
 
 public class Radar {
-	
 	private JButton WxonBtn ;
 	private JButton TstBtn;
 	private JButton WxaBtn;
@@ -49,6 +50,9 @@ public class Radar {
 	private JButton AutoBtn;
 	private JPanel anglePanel ;
 	private JPanel ModePanel ;
+	private ItemListener itemListener;
+	private JToggleButton tglbtnOn;
+	private int state;
 
 	
 	private enum PossibleState{
@@ -57,6 +61,14 @@ public class Radar {
 	
 	private enum Modes {
 		WXON, TST, WXA, STDBY, OFF
+	}
+	
+	private enum TiltState{
+		S1, S2, S3, S4, S5
+	}
+	
+	private enum Tilt {
+		CB1, CB2, CB3, CB4, CB5
 	}
 
 	/**
@@ -77,6 +89,9 @@ public class Radar {
 	
 	private final Automaton<Modes, PossibleState> autoMode;
     private final Map<Modes, JComponent> eventSourcesM;
+    
+    private final Automaton<Tilt, TiltState> automatonTilt;
+    private final Map<Tilt, JComponent> eventSourcesTilt;
 
 	/**
 	 * Create the application.
@@ -98,11 +113,18 @@ public class Radar {
 		         
 		// Add positions label in the slider
 		Hashtable position = new Hashtable();
+		position.put(-45, new JLabel("-45"));
+		position.put(-30, new JLabel("-30"));
+		position.put(-15, new JLabel("-15"));
 		position.put(0, new JLabel("0"));
-		position.put(25, new JLabel("25"));
-		position.put(50, new JLabel("50"));
-		position.put(75, new JLabel("75"));
-		position.put(100, new JLabel("100"));
+		position.put(15, new JLabel("15"));
+		position.put(30, new JLabel("30"));
+		position.put(45, new JLabel("45"));
+		
+		
+		slider.setMaximum(45);
+		slider.setMinimum(45);
+
 		         
 		// Set the label to be drawn
 		slider.setLabelTable(position); 
@@ -128,6 +150,14 @@ public class Radar {
         autoMode.registerInitialization(PossibleState.S5);
 
 		autoMode.initialize();
+		
+		automatonTilt = new Automaton<>(Tilt.values(), TiltState.values());
+		eventSourcesTilt = new HashMap<>(Tilt.values().length);
+		eventSourcesTilt.put(Tilt.CB1, ManualBtn);
+		eventSourcesTilt.put(Tilt.CB2, AutoBtn);
+		eventSourcesTilt.put(Tilt.CB3, tglbtnOn);
+		eventSourcesTilt.put(Tilt.CB4, tglbtnOn);
+		eventSourcesTilt.put(Tilt.CB5, slider);
 
 			
 	}
@@ -145,6 +175,7 @@ public class Radar {
 		 angleBtn = new JButton("Angle");
 		angleBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				angleBtn.setPressedIcon(null) ;
 				switchPanel(anglePanel);
 			}
 		});
@@ -156,24 +187,27 @@ public class Radar {
 
 		 	}
 		 });
+		
+		  
+	  
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(angleBtn)
 							.addGap(18)
 							.addComponent(ModeBtn)
-							.addGap(257))
-						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
-							.addComponent(layeredPane, GroupLayout.DEFAULT_SIZE, 429, Short.MAX_VALUE)
+							.addGap(381))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addComponent(layeredPane, GroupLayout.DEFAULT_SIZE, 542, Short.MAX_VALUE)
 							.addGap(15))))
 		);
 		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
 					.addGap(20)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(angleBtn)
@@ -201,7 +235,38 @@ public class Radar {
 		          
 		          JLabel lblStabilisation = new JLabel("STABILISATION");
 		          
-		          JToggleButton tglbtnOn = new JToggleButton("ON");
+		           tglbtnOn = new JToggleButton("ON");
+		          
+		          
+		          
+		           ItemListener itemListener = new ItemListener() {
+		        	    @SuppressWarnings("deprecation")
+						public void itemStateChanged(ItemEvent itemEvent) {
+		        	        state = itemEvent.getStateChange();
+		        	        if (state == ItemEvent.SELECTED) {
+		        	            System.out.println("Selected");
+		        	            tglbtnOn.setLabel("ON");
+		        	        } else {
+		        	            tglbtnOn.setLabel("OFF");
+
+		        	            System.out.println("Deselected"); 
+		        	        }
+		        	    }
+		        	};
+		        	
+		        
+		        	tglbtnOn.addItemListener(itemListener);
+		        	tglbtnOn.addActionListener(new ActionListener( ) {
+		        	      public void actionPerformed(ActionEvent ev) {
+		        	    	  
+		        	    	  if(tglbtnOn.getLabel().equals("ON"))
+		        	                stabilizationOnActionPerformed(ev);
+
+		        	    	  else if(tglbtnOn.getLabel().equals("OFF"))
+		        	                stabilizationOffActionPerformed(ev);
+
+		        	        }
+		        	      });
 		          GroupLayout gl_anglePanel = new GroupLayout(anglePanel);
 		          gl_anglePanel.setHorizontalGroup(
 		          	gl_anglePanel.createParallelGroup(Alignment.LEADING)
@@ -342,6 +407,26 @@ public class Radar {
 		
 	}
 	
+	private void ManualActionPerformed(ActionEvent e) {
+		automatonTilt.acceptEvent(Tilt.CB1);
+		
+	}
+	
+	private void AutoActionPerformed(ActionEvent e) {
+		automatonTilt.acceptEvent(Tilt.CB2);
+		
+	}
+	
+	
+	private void stabilizationOnActionPerformed(ActionEvent e) {
+		automatonTilt.acceptEvent(Tilt.CB3);
+		
+	}
+	private void stabilizationOffActionPerformed(ActionEvent e) {
+		automatonTilt.acceptEvent(Tilt.CB4);
+		
+	}
+	
 	public void switchPanel(JPanel panel) {
 		
 		layeredPane.removeAll();
@@ -350,4 +435,6 @@ public class Radar {
 		layeredPane.revalidate();
 		
 	}
+	
+	
 }
