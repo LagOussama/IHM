@@ -125,13 +125,13 @@ public class Radar {
 		         
 		// Add positions label in the slider
 		Hashtable position = new Hashtable();
-		position.put(-45, new JLabel("-15"));
-		position.put(-30, new JLabel("-10"));
-		position.put(-15, new JLabel("-5"));
+		position.put(-15, new JLabel("-15"));
+		position.put(-10, new JLabel("-10"));
+		position.put(-5, new JLabel("-5"));
 		position.put(0, new JLabel("0"));
-		position.put(15, new JLabel("5"));
-		position.put(30, new JLabel("10"));
-		position.put(45, new JLabel("15"));
+		position.put(5, new JLabel("5"));
+		position.put(10, new JLabel("10"));
+		position.put(15, new JLabel("15"));
 		
 		
 		slider.setMaximum(15);
