@@ -39,6 +39,7 @@ import javax.swing.JToggleButton;
 import javax.swing.JSeparator;
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import java.awt.Color;
 
 public class Radar {
 	private JButton WxonBtn ;
@@ -226,6 +227,7 @@ public class Radar {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.getContentPane().setBackground(new Color(51, 102, 153));
 		frame.setTitle("WXR Apps");
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -252,17 +254,17 @@ public class Radar {
 	  
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-					.addComponent(angleBtn)
-					.addGap(18)
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+					.addContainerGap(123, Short.MAX_VALUE)
 					.addComponent(ModeBtn)
-					.addGap(268))
-				.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+					.addGap(18)
+					.addComponent(angleBtn)
+					.addGap(151))
+				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addComponent(layeredPane, GroupLayout.PREFERRED_SIZE, 428, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(129, Short.MAX_VALUE))
+					.addContainerGap(16, Short.MAX_VALUE))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -277,6 +279,7 @@ public class Radar {
 		);
 		          
 		           anglePanel = new JPanel();
+		           anglePanel.setBackground(new Color(51, 102, 153));
 		          
 		           AutoBtn = new JButton("Auto");
 		          AutoBtn.addActionListener(new ActionListener() {
@@ -407,6 +410,7 @@ public class Radar {
 		          anglePanel.setLayout(gl_anglePanel);
 		          
 		          ModePanel = new JPanel();
+		          ModePanel.setBackground(new Color(51, 102, 153));
 		          
 		           WxaBtn = new JButton("WXA");
 		           
@@ -418,6 +422,7 @@ public class Radar {
 		            });
 		            
 		             StdbyBtn = new JButton("STDBY");
+		             StdbyBtn.setBackground(new Color(102, 102, 153));
 		             
 		              TstBtn = new JButton("TST");
 		              
